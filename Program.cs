@@ -1,40 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static System.Console;
+﻿using static System.Console;
 
-class Quote
-{
-    public string Ticker { get; set; }
-    public double Price { get; set; }
-    public string Exchange { get; set; }
-
-    public Quote(string ticker, double price) => (Ticker, Price, Exchange) = (ticker, price, null);
-}
 
 static class Program
 {
-    internal static async IAsyncEnumerable<double> GenerateQuotes()
+    static string[] tickers = new string[]
     {
-        var quotes = Enumerable.Repeat(new Quote("BVB", 2.41), 20);
+                            // index from start    index from end
+            "0-FP",         // 0                   ^9
+            "1-TLV",        // 1                   ^8
+            "2-SNP",        // 2                   ^7
+            "3-SNG",        // 3                   ^6
+            "4-BRD",        // 4                   ^5
+            "5-TGN",        // 5                   ^4
+            "6-EL",         // 6                   ^3
+            "7-DIG",        // 7                   ^2
+            "8-TEL"         // 8                   ^1
+    };
 
-        var i = 0;
-        foreach (var q in quotes)
-        {
-            // every 3 elements, wait 2 seconds:
-            if (i % 3 == 0)
-                await Task.Delay(2000);
-            i++;
-            yield return q.Price;
-        }
-    }
-
-    public static async Task Main()
+    static void Main()
     {
-        await foreach (var price in GenerateQuotes())
-        {
-            WriteLine($"The time is {DateTime.Now:hh:mm:ss}. Retrieved {price}");
-        }
+        var sel = tickers[..4];
+        foreach (var t in sel) WriteLine($"{t} ");
     }
+    // -1, -2 .. 0, -2 .., .. , ..4, 6.., index, range, esoteric
+
 }
