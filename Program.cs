@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using static System.Console;
 
 class Quote
@@ -8,20 +11,30 @@ class Quote
     public string Exchange { get; set; }
 
     public Quote(string ticker, double price) => (Ticker, Price, Exchange) = (ticker, price, null);
-
-    public static string GetExchangeCountry(Quote q)
-    {
-        string exchange = q.Exchange;
-        return exchange.StartsWith("BVB") ? "Romania" : "TheRest";
-    }
 }
 
 static class Program
 {
-    static void Main()
+    internal static async IAsyncEnumerable<double> GenerateQuotes()
     {
-        var q = new Quote("TLV", 2.41);
-        var country = Quote.GetExchangeCountry(q);
-        WriteLine(country);
+        var quotes = Enumerable.Repeat(new Quote("BVB", 2.41), 20);
+
+        var i = 0;
+        foreach (var q in quotes)
+        {
+            // every 3 elements, wait 2 seconds:
+            if (i % 3 == 0)
+                await Task.Delay(2000);
+            i++;
+            yield return q.Price;
+        }
+    }
+
+    public static async Task Main()
+    {
+        await foreach (var price in GenerateQuotes())
+        {
+            WriteLine($"The time is {DateTime.Now:hh:mm:ss}. Retrieved {price}");
+        }
     }
 }
