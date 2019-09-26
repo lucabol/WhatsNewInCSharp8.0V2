@@ -1,25 +1,24 @@
-﻿using static System.Console;
+﻿using System;
+using System.Collections.Generic;
+using static System.Console;
 
-internal ref struct InterestMatrix
-{
-    private string name;
-
-    public InterestMatrix(string name) => this.name = name;
-
-    public void Dispose() => WriteLine($"Disposing {name}");
-
-    internal void CopyFrom(InterestMatrix src) => WriteLine($"Copying {src.name} to {name}");
-}
-public class Program
+class Program
 {
     static void Main()
     {
-        using (var src = new InterestMatrix("src-matrix"))
+        foreach (var i in DiscountTable(1, 10)) WriteLine(i);
+    }
+
+    public static IEnumerable<double> DiscountTable(int start, int end)
+    {
+        // Do other interesting stuff ...
+
+        return generateSequence();
+
+        IEnumerable<double> generateSequence()
         {
-            using (var dest = new InterestMatrix("dst-matrix"))
-            {
-                dest.CopyFrom(src);
-            }
+            for (int i = start; i < end; i++)
+                yield return i/10.0;
         }
     }
 }
