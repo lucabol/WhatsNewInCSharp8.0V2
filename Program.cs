@@ -1,36 +1,22 @@
-﻿using System;
-using static System.Console;
+﻿using static System.Console;
 
 internal ref struct InterestMatrix
 {
     private string name;
-    private bool beenDisposed;
 
-    public InterestMatrix(string name, bool beenDisposed = false) => (this.name, this.beenDisposed) = (name, beenDisposed);
+    public InterestMatrix(string name) => this.name = name;
 
-    public void Dispose()
-    {
-        beenDisposed = true;
-        Console.WriteLine($"Disposing {name}");
-    }
+    public void Dispose() => WriteLine($"Disposing {name}");
 
-    internal void CopyFrom(InterestMatrix src)
-    {
-        switch (beenDisposed, src.beenDisposed)
-        {
-            case (false, false): Console.WriteLine($"Copying from {src.name} to {name}"); return;
-            case (_, _): throw new ObjectDisposedException($"Resource {name} has already been disposed");
-        };
-
-    }
+    internal void CopyFrom(InterestMatrix src) => WriteLine($"Copying {src.name} to {name}");
 }
 public class Program
 {
     static void Main()
     {
-        using (var src = new InterestMatrix("source"))
+        using (var src = new InterestMatrix("src-matrix"))
         {
-            using (var dest = new InterestMatrix("destination"))
+            using (var dest = new InterestMatrix("dst-matrix"))
             {
                 dest.CopyFrom(src);
             }
