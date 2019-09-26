@@ -1,27 +1,52 @@
 ﻿using System;
 using static System.Console;
 
-class Quote
+readonly struct Stock
 {
-    public string Ticker { get; set; }
-    public double Price { get; set; }
-    public string Exchange { get; set; }
+    public readonly string Ticker;
+    public readonly double Price;
 
-    public Quote(string ticker, double price) => (Ticker, Price, Exchange) = (ticker, price, null);
-
-    public static string GetExchangeCountry(Quote q)
-    {
-        string exchange = q.Exchange;
-        return exchange.StartsWith("BVB") ? "Romania" : "TheRest";
-    }
+    public Stock(string ticker, double price) => (Ticker, Price) = (ticker, price);
 }
 
-static class Program
+readonly struct Bond
 {
+    public readonly double FaceValue;
+    public readonly double Interest;
+    public readonly DateTime Maturity;
+
+    public Bond(double faceValue, double interest, DateTime maturity) =>
+        (FaceValue, Interest, Maturity) = (faceValue, interest, maturity);
+}
+
+static class Calculator
+{
+    static double CalcPrice(object contract)
+    {
+        double price;
+        switch(contract)
+        {
+            case Stock s:
+                price = s.Price;
+                break;
+            case Bond b:
+                price = b.FaceValue;
+                break;
+            case null:
+                throw new Exception("Contract can't be null.");
+            default:
+                throw new Exception("Not a known contract type.");
+        };
+        return price;
+    }
     static void Main()
     {
-        var q = new Quote("TLV", 2.41);
-        var country = Quote.GetExchangeCountry(q);
-        WriteLine(country);
+        var s = new Stock("BVP", 2.41);
+        var b = new Bond(1_000, 0.05, DateTime.Now.AddMonths(12));
+
+        WriteLine(Calculator.CalcPrice(s));
+        WriteLine(Calculator.CalcPrice(b));
+
     }
 }
+// Expr, prop var, tuple combin, recur, deconstruct?
