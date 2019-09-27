@@ -1,25 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using static System.Console;
+
+struct Entry<K, V>
+{
+    public K Key;
+    public V Value;
+}
 
 public class Program
 {
-    static Random rnd = new Random();
-
-    static List<double> GetPrices() => rnd.NextDouble() > 0.5 ? null : new List<double>();
-
     static void Main()
     {
+        Span<Entry<int,int>> dict = stackalloc[]
+        {
+            new Entry<int, int> { Key = 0, Value = 0 },
+            new Entry<int, int> { Key = 1, Value = 0 },
+            new Entry<int, int> { Key = 2, Value = 0 },
+        };
 
-        var prices = GetPrices();
-        prices ??= new List<double>();
+/*
+        Span<Entry<int, string>> dict2 = stackalloc[]
+        {
+            new Entry<int, string> { Key = 0, Value = "Bob" },
+            new Entry<int, string> { Key = 0, Value = "Rob" },
+            new Entry<int, string> { Key = 0, Value = "Dod" },
+        };
+*/
 
-        int? i = null;
-        prices.Add(i ??= 17);
-        prices.Add(i ??= 20);
-
-        WriteLine(string.Join(' ', prices));
-        WriteLine(i);
     }
 }
-// Equivalence
+// LangVersion, strings
