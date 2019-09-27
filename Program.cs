@@ -1,28 +1,39 @@
-﻿using System;
-using static System.Console;
+﻿using static System.Console;
 
-struct Bond
+public readonly struct Bond
 {
-    public double FaceValue { get; set; }
-    public double Interest { get; set; }
-    public DateTime Maturity { get; set; }
-    public double SecretValue => Math.Sqrt(FaceValue * Interest);
-
-    public Bond(double faceValue, double interest, DateTime maturity) =>
-        (FaceValue, Interest, Maturity) = (faceValue, interest, maturity);
-
-    public override string ToString() => $"SecretValue: {SecretValue}";
-
-    public void SetValues(double face, double interest) => (FaceValue, Interest) = (face, interest);
+    public readonly double FaceValue;
+    public readonly double Interest;
+    public Bond(double f, double i) => (FaceValue, Interest) = (f, i);
 }
 
-class Program
+interface IPricer
+{
+    double Price(Bond b);
+}
+
+class StandardPricer : IPricer
+{
+    double IPricer.Price(Bond b) => b.FaceValue * b.Interest / 0.1;
+}
+
+class OptimizedPricer : IPricer
+{
+    double IPricer.Price(Bond b) => (b.FaceValue * b.Interest / 0.1) * 2;
+}
+
+// ... Several other Pricers ...
+
+public class Program
 {
     static void Main()
     {
-        var b = new Bond() { FaceValue = 1_000, Interest = 0.05, Maturity = DateTime.Now.AddMonths(12) };
-        WriteLine(b);
+        var b = new Bond(1_000, 0.05);
+
+        IPricer st = new StandardPricer();
+        WriteLine(st.Price(b));
+
+        st = new OptimizedPricer();
+        WriteLine(st.Price(b));
     }
 }
-
-// ro on tostring, fix, setvalues
